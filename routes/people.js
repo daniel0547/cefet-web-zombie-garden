@@ -56,6 +56,31 @@ router.get('/new/', (req, res) => {
   res.render('newPerson');
 });
 
+router.post('/', (req, res) => {
+  db.query('INSERT INTO person VALUES(NULL,'+ db.escape(req.body.name) +',1,NULL);',
+    (err, result) => {
+      if (err) {
+        req.flash('error', 'Erro desconhecido. Descrição: ' + err);
+      } else {
+        req.flash('success', 'A pessoa foi cadastrada com sucesso.');
+      }
+      res.redirect('/people');
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  db.query('DELETE FROM person where id='+db.escape(req.params.id)+';',
+    (err, result) => {
+      if (err) {
+        req.flash('error', 'Erro desconhecido. Descrição: ' + err);
+      } else if (result.affectedRows !== 1) {
+        req.flash('error', 'Nao ha pessoa para ser removida');
+      } else {
+        req.flash('success', 'A pessoa foi removida com sucesso.');
+      }
+      res.redirect('/people');
+  });
+});
 
 
 
